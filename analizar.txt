@@ -1,6 +1,10 @@
-x = 5;
-y = 10;
-PRINTCAT(x + y);
+MIAU x = 5;
+MIAUMIAU y = 10.5;
+GARRITA z = true;
+
+PRINTCAT(x);
+PRINTCAT(y);
+PRINTCAT(z);
 
 GATITO (x < y) {
     PRINTCAT("x es menor que y");
@@ -8,10 +12,11 @@ GATITO (x < y) {
     PRINTCAT("x no es menor que y");
 }
 
-z = 0;
+x = x + 10;
+PRINTCAT(x);
 
-resultado = (x + y) * 2;
+z = false;
+PRINTCAT(z);
+
+GARRITA resultado = (x > 0) and (y < 20);
 PRINTCAT(resultado);
-
-condicion = (x > 0) and (y < 20);
-PRINTCAT(condicion);

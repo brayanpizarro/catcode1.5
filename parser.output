@@ -7,98 +7,107 @@ Grammar
     2 statement_list: statement
     3               | statement_list statement
 
-    4 statement: expr ';'
-    5          | IDENTIFIER ASSIGN expr ';'
-    6          | if_statement
-    7          | PRINT LPAREN expr RPAREN ';'
-    8          | PRINT LPAREN STRING RPAREN ';'
-    9          | block
+    4 statement: INT_TYPE IDENTIFIER ASSIGN expr ';'
+    5          | FLOAT_TYPE IDENTIFIER ASSIGN expr ';'
+    6          | BOOL_TYPE IDENTIFIER ASSIGN expr ';'
+    7          | IDENTIFIER ASSIGN expr ';'
+    8          | if_statement
+    9          | PRINT LPAREN IDENTIFIER RPAREN ';'
+   10          | PRINT LPAREN STRING RPAREN ';'
+   11          | block
 
-   10 block: '{' statement_list '}'
+   12 block: '{' statement_list '}'
 
-   11 if_statement: IF LPAREN expr RPAREN statement
-   12             | IF LPAREN expr RPAREN statement ELSE statement
+   13 if_statement: IF LPAREN expr RPAREN statement
+   14             | IF LPAREN expr RPAREN statement ELSE statement
 
-   13 expr: NUMBER
-   14     | IDENTIFIER
-   15     | expr PLUS expr
-   16     | expr MINUS expr
-   17     | expr TIMES expr
-   18     | expr DIVIDE expr
-   19     | expr LT expr
-   20     | expr GT expr
-   21     | expr LE expr
-   22     | expr GE expr
-   23     | expr AND expr
-   24     | expr OR expr
-   25     | LPAREN expr RPAREN
-   26     | MINUS expr
+   15 expr: INT_VAL
+   16     | FLOAT_VAL
+   17     | BOOL_VAL
+   18     | IDENTIFIER
+   19     | expr PLUS expr
+   20     | expr MINUS expr
+   21     | expr TIMES expr
+   22     | expr DIVIDE expr
+   23     | expr LT expr
+   24     | expr GT expr
+   25     | expr LE expr
+   26     | expr GE expr
+   27     | expr AND expr
+   28     | expr OR expr
+   29     | LPAREN expr RPAREN
+   30     | MINUS expr
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
-    ';' (59) 4 5 7 8
-    '{' (123) 10
-    '}' (125) 10
+    ';' (59) 4 5 6 7 9 10
+    '{' (123) 12
+    '}' (125) 12
     error (256)
-    NUMBER <num> (258) 13
-    IDENTIFIER <id> (259) 5 14
-    STRING <id> (260) 8
-    PLUS (261) 15
-    MINUS (262) 16 26
-    TIMES (263) 17
-    DIVIDE (264) 18
-    LPAREN (265) 7 8 11 12 25
-    RPAREN (266) 7 8 11 12 25
-    LT (267) 19
-    GT (268) 20
-    LE (269) 21
-    GE (270) 22
-    AND (271) 23
-    OR (272) 24
-    IF (273) 11 12
-    ELSE (274) 12
-    PRINT (275) 7 8
-    ASSIGN (276) 5
-    UMINUS (277)
-    LOWER_THAN_ELSE (278)
+    INT_VAL <ival> (258) 15
+    BOOL_VAL <ival> (259) 17
+    FLOAT_VAL <fval> (260) 16
+    IDENTIFIER <id> (261) 4 5 6 7 9 18
+    STRING <id> (262) 10
+    PLUS (263) 19
+    MINUS (264) 20 30
+    TIMES (265) 21
+    DIVIDE (266) 22
+    LPAREN (267) 9 10 13 14 29
+    RPAREN (268) 9 10 13 14 29
+    LT (269) 23
+    GT (270) 24
+    LE (271) 25
+    GE (272) 26
+    AND (273) 27
+    OR (274) 28
+    IF (275) 13 14
+    ELSE (276) 14
+    PRINT (277) 9 10
+    ASSIGN (278) 4 5 6 7
+    INT_TYPE (279) 4
+    FLOAT_TYPE (280) 5
+    BOOL_TYPE (281) 6
+    UMINUS (282)
+    LOWER_THAN_ELSE (283)
 
 
 Nonterminals, with rules where they appear
 
-    $accept (27)
+    $accept (32)
         on left: 0
-    program (28)
+    program (33)
         on left: 1
         on right: 0
-    statement_list <stmt> (29)
+    statement_list <stmt> (34)
         on left: 2 3
-        on right: 1 3 10
-    statement <stmt> (30)
-        on left: 4 5 6 7 8 9
-        on right: 2 3 11 12
-    block <stmt> (31)
-        on left: 10
-        on right: 9
-    if_statement <stmt> (32)
-        on left: 11 12
-        on right: 6
-    expr <num> (33)
-        on left: 13 14 15 16 17 18 19 20 21 22 23 24 25 26
-        on right: 4 5 7 11 12 15 16 17 18 19 20 21 22 23 24 25 26
+        on right: 1 3 12
+    statement <stmt> (35)
+        on left: 4 5 6 7 8 9 10 11
+        on right: 2 3 13 14
+    block <stmt> (36)
+        on left: 12
+        on right: 11
+    if_statement <stmt> (37)
+        on left: 13 14
+        on right: 8
+    expr <ival> (38)
+        on left: 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30
+        on right: 4 5 6 7 13 14 19 20 21 22 23 24 25 26 27 28 29 30
 
 
 State 0
 
     0 $accept: . program $end
 
-    NUMBER      shift, and go to state 1
-    IDENTIFIER  shift, and go to state 2
-    MINUS       shift, and go to state 3
-    LPAREN      shift, and go to state 4
-    IF          shift, and go to state 5
-    PRINT       shift, and go to state 6
+    IDENTIFIER  shift, and go to state 1
+    IF          shift, and go to state 2
+    PRINT       shift, and go to state 3
+    INT_TYPE    shift, and go to state 4
+    FLOAT_TYPE  shift, and go to state 5
+    BOOL_TYPE   shift, and go to state 6
     '{'         shift, and go to state 7
 
     program         go to state 8
@@ -106,90 +115,75 @@ State 0
     statement       go to state 10
     block           go to state 11
     if_statement    go to state 12
-    expr            go to state 13
 
 
 State 1
 
-   13 expr: NUMBER .
+    7 statement: IDENTIFIER . ASSIGN expr ';'
 
-    $default  reduce using rule 13 (expr)
+    ASSIGN  shift, and go to state 13
 
 
 State 2
 
-    5 statement: IDENTIFIER . ASSIGN expr ';'
-   14 expr: IDENTIFIER .
+   13 if_statement: IF . LPAREN expr RPAREN statement
+   14             | IF . LPAREN expr RPAREN statement ELSE statement
 
-    ASSIGN  shift, and go to state 14
-
-    $default  reduce using rule 14 (expr)
+    LPAREN  shift, and go to state 14
 
 
 State 3
 
-   26 expr: MINUS . expr
+    9 statement: PRINT . LPAREN IDENTIFIER RPAREN ';'
+   10          | PRINT . LPAREN STRING RPAREN ';'
 
-    NUMBER      shift, and go to state 1
-    IDENTIFIER  shift, and go to state 15
-    MINUS       shift, and go to state 3
-    LPAREN      shift, and go to state 4
-
-    expr  go to state 16
+    LPAREN  shift, and go to state 15
 
 
 State 4
 
-   25 expr: LPAREN . expr RPAREN
+    4 statement: INT_TYPE . IDENTIFIER ASSIGN expr ';'
 
-    NUMBER      shift, and go to state 1
-    IDENTIFIER  shift, and go to state 15
-    MINUS       shift, and go to state 3
-    LPAREN      shift, and go to state 4
-
-    expr  go to state 17
+    IDENTIFIER  shift, and go to state 16
 
 
 State 5
 
-   11 if_statement: IF . LPAREN expr RPAREN statement
-   12             | IF . LPAREN expr RPAREN statement ELSE statement
+    5 statement: FLOAT_TYPE . IDENTIFIER ASSIGN expr ';'
 
-    LPAREN  shift, and go to state 18
+    IDENTIFIER  shift, and go to state 17
 
 
 State 6
 
-    7 statement: PRINT . LPAREN expr RPAREN ';'
-    8          | PRINT . LPAREN STRING RPAREN ';'
+    6 statement: BOOL_TYPE . IDENTIFIER ASSIGN expr ';'
 
-    LPAREN  shift, and go to state 19
+    IDENTIFIER  shift, and go to state 18
 
 
 State 7
 
-   10 block: '{' . statement_list '}'
+   12 block: '{' . statement_list '}'
 
-    NUMBER      shift, and go to state 1
-    IDENTIFIER  shift, and go to state 2
-    MINUS       shift, and go to state 3
-    LPAREN      shift, and go to state 4
-    IF          shift, and go to state 5
-    PRINT       shift, and go to state 6
+    IDENTIFIER  shift, and go to state 1
+    IF          shift, and go to state 2
+    PRINT       shift, and go to state 3
+    INT_TYPE    shift, and go to state 4
+    FLOAT_TYPE  shift, and go to state 5
+    BOOL_TYPE   shift, and go to state 6
     '{'         shift, and go to state 7
 
-    statement_list  go to state 20
+    statement_list  go to state 19
     statement       go to state 10
     block           go to state 11
     if_statement    go to state 12
-    expr            go to state 13
 
 
 State 8
 
     0 $accept: program . $end
 
-    $end  shift, and go to state 21
+    $end  shift, and go to state 20
 
 
 State 9
@@ -197,20 +191,19 @@ State 9
     1 program: statement_list .
     3 statement_list: statement_list . statement
 
-    NUMBER      shift, and go to state 1
-    IDENTIFIER  shift, and go to state 2
-    MINUS       shift, and go to state 3
-    LPAREN      shift, and go to state 4
-    IF          shift, and go to state 5
-    PRINT       shift, and go to state 6
+    IDENTIFIER  shift, and go to state 1
+    IF          shift, and go to state 2
+    PRINT       shift, and go to state 3
+    INT_TYPE    shift, and go to state 4
+    FLOAT_TYPE  shift, and go to state 5
+    BOOL_TYPE   shift, and go to state 6
     '{'         shift, and go to state 7
 
     $default  reduce using rule 1 (program)
 
-    statement     go to state 22
+    statement     go to state 21
     block         go to state 11
     if_statement  go to state 12
-    expr          go to state 13
 
 
 State 10
@@ -222,698 +215,874 @@ State 10
 
 State 11
 
-    9 statement: block .
+   11 statement: block .
 
-    $default  reduce using rule 9 (statement)
+    $default  reduce using rule 11 (statement)
 
 
 State 12
 
-    6 statement: if_statement .
+    8 statement: if_statement .
 
-    $default  reduce using rule 6 (statement)
+    $default  reduce using rule 8 (statement)
 
 
 State 13
 
-    4 statement: expr . ';'
-   15 expr: expr . PLUS expr
-   16     | expr . MINUS expr
-   17     | expr . TIMES expr
-   18     | expr . DIVIDE expr
-   19     | expr . LT expr
-   20     | expr . GT expr
-   21     | expr . LE expr
-   22     | expr . GE expr
-   23     | expr . AND expr
-   24     | expr . OR expr
+    7 statement: IDENTIFIER ASSIGN . expr ';'
 
-    PLUS    shift, and go to state 23
-    MINUS   shift, and go to state 24
-    TIMES   shift, and go to state 25
-    DIVIDE  shift, and go to state 26
-    LT      shift, and go to state 27
-    GT      shift, and go to state 28
-    LE      shift, and go to state 29
-    GE      shift, and go to state 30
-    AND     shift, and go to state 31
-    OR      shift, and go to state 32
-    ';'     shift, and go to state 33
+    INT_VAL     shift, and go to state 22
+    BOOL_VAL    shift, and go to state 23
+    FLOAT_VAL   shift, and go to state 24
+    IDENTIFIER  shift, and go to state 25
+    MINUS       shift, and go to state 26
+    LPAREN      shift, and go to state 27
+
+    expr  go to state 28
 
 
 State 14
 
-    5 statement: IDENTIFIER ASSIGN . expr ';'
+   13 if_statement: IF LPAREN . expr RPAREN statement
+   14             | IF LPAREN . expr RPAREN statement ELSE statement
 
-    NUMBER      shift, and go to state 1
-    IDENTIFIER  shift, and go to state 15
-    MINUS       shift, and go to state 3
-    LPAREN      shift, and go to state 4
+    INT_VAL     shift, and go to state 22
+    BOOL_VAL    shift, and go to state 23
+    FLOAT_VAL   shift, and go to state 24
+    IDENTIFIER  shift, and go to state 25
+    MINUS       shift, and go to state 26
+    LPAREN      shift, and go to state 27
 
-    expr  go to state 34
+    expr  go to state 29
 
 
 State 15
 
-   14 expr: IDENTIFIER .
+    9 statement: PRINT LPAREN . IDENTIFIER RPAREN ';'
+   10          | PRINT LPAREN . STRING RPAREN ';'
 
-    $default  reduce using rule 14 (expr)
+    IDENTIFIER  shift, and go to state 30
+    STRING      shift, and go to state 31
 
 
 State 16
 
-   15 expr: expr . PLUS expr
-   16     | expr . MINUS expr
-   17     | expr . TIMES expr
-   18     | expr . DIVIDE expr
-   19     | expr . LT expr
-   20     | expr . GT expr
-   21     | expr . LE expr
-   22     | expr . GE expr
-   23     | expr . AND expr
-   24     | expr . OR expr
-   26     | MINUS expr .
+    4 statement: INT_TYPE IDENTIFIER . ASSIGN expr ';'
 
-    $default  reduce using rule 26 (expr)
+    ASSIGN  shift, and go to state 32
 
 
 State 17
 
-   15 expr: expr . PLUS expr
-   16     | expr . MINUS expr
-   17     | expr . TIMES expr
-   18     | expr . DIVIDE expr
-   19     | expr . LT expr
-   20     | expr . GT expr
-   21     | expr . LE expr
-   22     | expr . GE expr
-   23     | expr . AND expr
-   24     | expr . OR expr
-   25     | LPAREN expr . RPAREN
+    5 statement: FLOAT_TYPE IDENTIFIER . ASSIGN expr ';'
 
-    PLUS    shift, and go to state 23
-    MINUS   shift, and go to state 24
-    TIMES   shift, and go to state 25
-    DIVIDE  shift, and go to state 26
-    RPAREN  shift, and go to state 35
-    LT      shift, and go to state 27
-    GT      shift, and go to state 28
-    LE      shift, and go to state 29
-    GE      shift, and go to state 30
-    AND     shift, and go to state 31
-    OR      shift, and go to state 32
+    ASSIGN  shift, and go to state 33
 
 
 State 18
 
-   11 if_statement: IF LPAREN . expr RPAREN statement
-   12             | IF LPAREN . expr RPAREN statement ELSE statement
+    6 statement: BOOL_TYPE IDENTIFIER . ASSIGN expr ';'
 
-    NUMBER      shift, and go to state 1
-    IDENTIFIER  shift, and go to state 15
-    MINUS       shift, and go to state 3
-    LPAREN      shift, and go to state 4
-
-    expr  go to state 36
+    ASSIGN  shift, and go to state 34
 
 
 State 19
 
-    7 statement: PRINT LPAREN . expr RPAREN ';'
-    8          | PRINT LPAREN . STRING RPAREN ';'
+    3 statement_list: statement_list . statement
+   12 block: '{' statement_list . '}'
 
-    NUMBER      shift, and go to state 1
-    IDENTIFIER  shift, and go to state 15
-    STRING      shift, and go to state 37
-    MINUS       shift, and go to state 3
-    LPAREN      shift, and go to state 4
+    IDENTIFIER  shift, and go to state 1
+    IF          shift, and go to state 2
+    PRINT       shift, and go to state 3
+    INT_TYPE    shift, and go to state 4
+    FLOAT_TYPE  shift, and go to state 5
+    BOOL_TYPE   shift, and go to state 6
+    '{'         shift, and go to state 7
+    '}'         shift, and go to state 35
 
-    expr  go to state 38
+    statement     go to state 21
+    block         go to state 11
+    if_statement  go to state 12
 
 
 State 20
-
-    3 statement_list: statement_list . statement
-   10 block: '{' statement_list . '}'
-
-    NUMBER      shift, and go to state 1
-    IDENTIFIER  shift, and go to state 2
-    MINUS       shift, and go to state 3
-    LPAREN      shift, and go to state 4
-    IF          shift, and go to state 5
-    PRINT       shift, and go to state 6
-    '{'         shift, and go to state 7
-    '}'         shift, and go to state 39
-
-    statement     go to state 22
-    block         go to state 11
-    if_statement  go to state 12
-    expr          go to state 13
-
-
-State 21
 
     0 $accept: program $end .
 
     $default  accept
 
 
-State 22
+State 21
 
     3 statement_list: statement_list statement .
 
     $default  reduce using rule 3 (statement_list)
 
 
-State 23
+State 22
 
-   15 expr: expr PLUS . expr
-
-    NUMBER      shift, and go to state 1
-    IDENTIFIER  shift, and go to state 15
-    MINUS       shift, and go to state 3
-    LPAREN      shift, and go to state 4
-
-    expr  go to state 40
-
-
-State 24
-
-   16 expr: expr MINUS . expr
-
-    NUMBER      shift, and go to state 1
-    IDENTIFIER  shift, and go to state 15
-    MINUS       shift, and go to state 3
-    LPAREN      shift, and go to state 4
-
-    expr  go to state 41
-
-
-State 25
-
-   17 expr: expr TIMES . expr
-
-    NUMBER      shift, and go to state 1
-    IDENTIFIER  shift, and go to state 15
-    MINUS       shift, and go to state 3
-    LPAREN      shift, and go to state 4
-
-    expr  go to state 42
-
-
-State 26
-
-   18 expr: expr DIVIDE . expr
-
-    NUMBER      shift, and go to state 1
-    IDENTIFIER  shift, and go to state 15
-    MINUS       shift, and go to state 3
-    LPAREN      shift, and go to state 4
-
-    expr  go to state 43
-
-
-State 27
-
-   19 expr: expr LT . expr
-
-    NUMBER      shift, and go to state 1
-    IDENTIFIER  shift, and go to state 15
-    MINUS       shift, and go to state 3
-    LPAREN      shift, and go to state 4
-
-    expr  go to state 44
-
-
-State 28
-
-   20 expr: expr GT . expr
-
-    NUMBER      shift, and go to state 1
-    IDENTIFIER  shift, and go to state 15
-    MINUS       shift, and go to state 3
-    LPAREN      shift, and go to state 4
-
-    expr  go to state 45
-
-
-State 29
-
-   21 expr: expr LE . expr
-
-    NUMBER      shift, and go to state 1
-    IDENTIFIER  shift, and go to state 15
-    MINUS       shift, and go to state 3
-    LPAREN      shift, and go to state 4
-
-    expr  go to state 46
-
-
-State 30
-
-   22 expr: expr GE . expr
-
-    NUMBER      shift, and go to state 1
-    IDENTIFIER  shift, and go to state 15
-    MINUS       shift, and go to state 3
-    LPAREN      shift, and go to state 4
-
-    expr  go to state 47
-
-
-State 31
-
-   23 expr: expr AND . expr
-
-    NUMBER      shift, and go to state 1
-    IDENTIFIER  shift, and go to state 15
-    MINUS       shift, and go to state 3
-    LPAREN      shift, and go to state 4
-
-    expr  go to state 48
-
-
-State 32
-
-   24 expr: expr OR . expr
-
-    NUMBER      shift, and go to state 1
-    IDENTIFIER  shift, and go to state 15
-    MINUS       shift, and go to state 3
-    LPAREN      shift, and go to state 4
-
-    expr  go to state 49
-
-
-State 33
-
-    4 statement: expr ';' .
-
-    $default  reduce using rule 4 (statement)
-
-
-State 34
-
-    5 statement: IDENTIFIER ASSIGN expr . ';'
-   15 expr: expr . PLUS expr
-   16     | expr . MINUS expr
-   17     | expr . TIMES expr
-   18     | expr . DIVIDE expr
-   19     | expr . LT expr
-   20     | expr . GT expr
-   21     | expr . LE expr
-   22     | expr . GE expr
-   23     | expr . AND expr
-   24     | expr . OR expr
-
-    PLUS    shift, and go to state 23
-    MINUS   shift, and go to state 24
-    TIMES   shift, and go to state 25
-    DIVIDE  shift, and go to state 26
-    LT      shift, and go to state 27
-    GT      shift, and go to state 28
-    LE      shift, and go to state 29
-    GE      shift, and go to state 30
-    AND     shift, and go to state 31
-    OR      shift, and go to state 32
-    ';'     shift, and go to state 50
-
-
-State 35
-
-   25 expr: LPAREN expr RPAREN .
-
-    $default  reduce using rule 25 (expr)
-
-
-State 36
-
-   11 if_statement: IF LPAREN expr . RPAREN statement
-   12             | IF LPAREN expr . RPAREN statement ELSE statement
-   15 expr: expr . PLUS expr
-   16     | expr . MINUS expr
-   17     | expr . TIMES expr
-   18     | expr . DIVIDE expr
-   19     | expr . LT expr
-   20     | expr . GT expr
-   21     | expr . LE expr
-   22     | expr . GE expr
-   23     | expr . AND expr
-   24     | expr . OR expr
-
-    PLUS    shift, and go to state 23
-    MINUS   shift, and go to state 24
-    TIMES   shift, and go to state 25
-    DIVIDE  shift, and go to state 26
-    RPAREN  shift, and go to state 51
-    LT      shift, and go to state 27
-    GT      shift, and go to state 28
-    LE      shift, and go to state 29
-    GE      shift, and go to state 30
-    AND     shift, and go to state 31
-    OR      shift, and go to state 32
-
-
-State 37
-
-    8 statement: PRINT LPAREN STRING . RPAREN ';'
-
-    RPAREN  shift, and go to state 52
-
-
-State 38
-
-    7 statement: PRINT LPAREN expr . RPAREN ';'
-   15 expr: expr . PLUS expr
-   16     | expr . MINUS expr
-   17     | expr . TIMES expr
-   18     | expr . DIVIDE expr
-   19     | expr . LT expr
-   20     | expr . GT expr
-   21     | expr . LE expr
-   22     | expr . GE expr
-   23     | expr . AND expr
-   24     | expr . OR expr
-
-    PLUS    shift, and go to state 23
-    MINUS   shift, and go to state 24
-    TIMES   shift, and go to state 25
-    DIVIDE  shift, and go to state 26
-    RPAREN  shift, and go to state 53
-    LT      shift, and go to state 27
-    GT      shift, and go to state 28
-    LE      shift, and go to state 29
-    GE      shift, and go to state 30
-    AND     shift, and go to state 31
-    OR      shift, and go to state 32
-
-
-State 39
-
-   10 block: '{' statement_list '}' .
-
-    $default  reduce using rule 10 (block)
-
-
-State 40
-
-   15 expr: expr . PLUS expr
-   15     | expr PLUS expr .
-   16     | expr . MINUS expr
-   17     | expr . TIMES expr
-   18     | expr . DIVIDE expr
-   19     | expr . LT expr
-   20     | expr . GT expr
-   21     | expr . LE expr
-   22     | expr . GE expr
-   23     | expr . AND expr
-   24     | expr . OR expr
-
-    TIMES   shift, and go to state 25
-    DIVIDE  shift, and go to state 26
+   15 expr: INT_VAL .
 
     $default  reduce using rule 15 (expr)
 
 
-State 41
+State 23
 
-   15 expr: expr . PLUS expr
-   16     | expr . MINUS expr
-   16     | expr MINUS expr .
-   17     | expr . TIMES expr
-   18     | expr . DIVIDE expr
-   19     | expr . LT expr
-   20     | expr . GT expr
-   21     | expr . LE expr
-   22     | expr . GE expr
-   23     | expr . AND expr
-   24     | expr . OR expr
-
-    TIMES   shift, and go to state 25
-    DIVIDE  shift, and go to state 26
-
-    $default  reduce using rule 16 (expr)
-
-
-State 42
-
-   15 expr: expr . PLUS expr
-   16     | expr . MINUS expr
-   17     | expr . TIMES expr
-   17     | expr TIMES expr .
-   18     | expr . DIVIDE expr
-   19     | expr . LT expr
-   20     | expr . GT expr
-   21     | expr . LE expr
-   22     | expr . GE expr
-   23     | expr . AND expr
-   24     | expr . OR expr
+   17 expr: BOOL_VAL .
 
     $default  reduce using rule 17 (expr)
 
 
-State 43
+State 24
 
-   15 expr: expr . PLUS expr
-   16     | expr . MINUS expr
-   17     | expr . TIMES expr
-   18     | expr . DIVIDE expr
-   18     | expr DIVIDE expr .
-   19     | expr . LT expr
-   20     | expr . GT expr
-   21     | expr . LE expr
-   22     | expr . GE expr
-   23     | expr . AND expr
-   24     | expr . OR expr
+   16 expr: FLOAT_VAL .
+
+    $default  reduce using rule 16 (expr)
+
+
+State 25
+
+   18 expr: IDENTIFIER .
 
     $default  reduce using rule 18 (expr)
 
 
+State 26
+
+   30 expr: MINUS . expr
+
+    INT_VAL     shift, and go to state 22
+    BOOL_VAL    shift, and go to state 23
+    FLOAT_VAL   shift, and go to state 24
+    IDENTIFIER  shift, and go to state 25
+    MINUS       shift, and go to state 26
+    LPAREN      shift, and go to state 27
+
+    expr  go to state 36
+
+
+State 27
+
+   29 expr: LPAREN . expr RPAREN
+
+    INT_VAL     shift, and go to state 22
+    BOOL_VAL    shift, and go to state 23
+    FLOAT_VAL   shift, and go to state 24
+    IDENTIFIER  shift, and go to state 25
+    MINUS       shift, and go to state 26
+    LPAREN      shift, and go to state 27
+
+    expr  go to state 37
+
+
+State 28
+
+    7 statement: IDENTIFIER ASSIGN expr . ';'
+   19 expr: expr . PLUS expr
+   20     | expr . MINUS expr
+   21     | expr . TIMES expr
+   22     | expr . DIVIDE expr
+   23     | expr . LT expr
+   24     | expr . GT expr
+   25     | expr . LE expr
+   26     | expr . GE expr
+   27     | expr . AND expr
+   28     | expr . OR expr
+
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    LT      shift, and go to state 42
+    GT      shift, and go to state 43
+    LE      shift, and go to state 44
+    GE      shift, and go to state 45
+    AND     shift, and go to state 46
+    OR      shift, and go to state 47
+    ';'     shift, and go to state 48
+
+
+State 29
+
+   13 if_statement: IF LPAREN expr . RPAREN statement
+   14             | IF LPAREN expr . RPAREN statement ELSE statement
+   19 expr: expr . PLUS expr
+   20     | expr . MINUS expr
+   21     | expr . TIMES expr
+   22     | expr . DIVIDE expr
+   23     | expr . LT expr
+   24     | expr . GT expr
+   25     | expr . LE expr
+   26     | expr . GE expr
+   27     | expr . AND expr
+   28     | expr . OR expr
+
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    RPAREN  shift, and go to state 49
+    LT      shift, and go to state 42
+    GT      shift, and go to state 43
+    LE      shift, and go to state 44
+    GE      shift, and go to state 45
+    AND     shift, and go to state 46
+    OR      shift, and go to state 47
+
+
+State 30
+
+    9 statement: PRINT LPAREN IDENTIFIER . RPAREN ';'
+
+    RPAREN  shift, and go to state 50
+
+
+State 31
+
+   10 statement: PRINT LPAREN STRING . RPAREN ';'
+
+    RPAREN  shift, and go to state 51
+
+
+State 32
+
+    4 statement: INT_TYPE IDENTIFIER ASSIGN . expr ';'
+
+    INT_VAL     shift, and go to state 22
+    BOOL_VAL    shift, and go to state 23
+    FLOAT_VAL   shift, and go to state 24
+    IDENTIFIER  shift, and go to state 25
+    MINUS       shift, and go to state 26
+    LPAREN      shift, and go to state 27
+
+    expr  go to state 52
+
+
+State 33
+
+    5 statement: FLOAT_TYPE IDENTIFIER ASSIGN . expr ';'
+
+    INT_VAL     shift, and go to state 22
+    BOOL_VAL    shift, and go to state 23
+    FLOAT_VAL   shift, and go to state 24
+    IDENTIFIER  shift, and go to state 25
+    MINUS       shift, and go to state 26
+    LPAREN      shift, and go to state 27
+
+    expr  go to state 53
+
+
+State 34
+
+    6 statement: BOOL_TYPE IDENTIFIER ASSIGN . expr ';'
+
+    INT_VAL     shift, and go to state 22
+    BOOL_VAL    shift, and go to state 23
+    FLOAT_VAL   shift, and go to state 24
+    IDENTIFIER  shift, and go to state 25
+    MINUS       shift, and go to state 26
+    LPAREN      shift, and go to state 27
+
+    expr  go to state 54
+
+
+State 35
+
+   12 block: '{' statement_list '}' .
+
+    $default  reduce using rule 12 (block)
+
+
+State 36
+
+   19 expr: expr . PLUS expr
+   20     | expr . MINUS expr
+   21     | expr . TIMES expr
+   22     | expr . DIVIDE expr
+   23     | expr . LT expr
+   24     | expr . GT expr
+   25     | expr . LE expr
+   26     | expr . GE expr
+   27     | expr . AND expr
+   28     | expr . OR expr
+   30     | MINUS expr .
+
+    $default  reduce using rule 30 (expr)
+
+
+State 37
+
+   19 expr: expr . PLUS expr
+   20     | expr . MINUS expr
+   21     | expr . TIMES expr
+   22     | expr . DIVIDE expr
+   23     | expr . LT expr
+   24     | expr . GT expr
+   25     | expr . LE expr
+   26     | expr . GE expr
+   27     | expr . AND expr
+   28     | expr . OR expr
+   29     | LPAREN expr . RPAREN
+
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    RPAREN  shift, and go to state 55
+    LT      shift, and go to state 42
+    GT      shift, and go to state 43
+    LE      shift, and go to state 44
+    GE      shift, and go to state 45
+    AND     shift, and go to state 46
+    OR      shift, and go to state 47
+
+
+State 38
+
+   19 expr: expr PLUS . expr
+
+    INT_VAL     shift, and go to state 22
+    BOOL_VAL    shift, and go to state 23
+    FLOAT_VAL   shift, and go to state 24
+    IDENTIFIER  shift, and go to state 25
+    MINUS       shift, and go to state 26
+    LPAREN      shift, and go to state 27
+
+    expr  go to state 56
+
+
+State 39
+
+   20 expr: expr MINUS . expr
+
+    INT_VAL     shift, and go to state 22
+    BOOL_VAL    shift, and go to state 23
+    FLOAT_VAL   shift, and go to state 24
+    IDENTIFIER  shift, and go to state 25
+    MINUS       shift, and go to state 26
+    LPAREN      shift, and go to state 27
+
+    expr  go to state 57
+
+
+State 40
+
+   21 expr: expr TIMES . expr
+
+    INT_VAL     shift, and go to state 22
+    BOOL_VAL    shift, and go to state 23
+    FLOAT_VAL   shift, and go to state 24
+    IDENTIFIER  shift, and go to state 25
+    MINUS       shift, and go to state 26
+    LPAREN      shift, and go to state 27
+
+    expr  go to state 58
+
+
+State 41
+
+   22 expr: expr DIVIDE . expr
+
+    INT_VAL     shift, and go to state 22
+    BOOL_VAL    shift, and go to state 23
+    FLOAT_VAL   shift, and go to state 24
+    IDENTIFIER  shift, and go to state 25
+    MINUS       shift, and go to state 26
+    LPAREN      shift, and go to state 27
+
+    expr  go to state 59
+
+
+State 42
+
+   23 expr: expr LT . expr
+
+    INT_VAL     shift, and go to state 22
+    BOOL_VAL    shift, and go to state 23
+    FLOAT_VAL   shift, and go to state 24
+    IDENTIFIER  shift, and go to state 25
+    MINUS       shift, and go to state 26
+    LPAREN      shift, and go to state 27
+
+    expr  go to state 60
+
+
+State 43
+
+   24 expr: expr GT . expr
+
+    INT_VAL     shift, and go to state 22
+    BOOL_VAL    shift, and go to state 23
+    FLOAT_VAL   shift, and go to state 24
+    IDENTIFIER  shift, and go to state 25
+    MINUS       shift, and go to state 26
+    LPAREN      shift, and go to state 27
+
+    expr  go to state 61
+
+
 State 44
 
-   15 expr: expr . PLUS expr
-   16     | expr . MINUS expr
-   17     | expr . TIMES expr
-   18     | expr . DIVIDE expr
-   19     | expr . LT expr
-   19     | expr LT expr .
-   20     | expr . GT expr
-   21     | expr . LE expr
-   22     | expr . GE expr
-   23     | expr . AND expr
-   24     | expr . OR expr
+   25 expr: expr LE . expr
 
-    PLUS    shift, and go to state 23
-    MINUS   shift, and go to state 24
-    TIMES   shift, and go to state 25
-    DIVIDE  shift, and go to state 26
+    INT_VAL     shift, and go to state 22
+    BOOL_VAL    shift, and go to state 23
+    FLOAT_VAL   shift, and go to state 24
+    IDENTIFIER  shift, and go to state 25
+    MINUS       shift, and go to state 26
+    LPAREN      shift, and go to state 27
 
-    $default  reduce using rule 19 (expr)
+    expr  go to state 62
 
 
 State 45
 
-   15 expr: expr . PLUS expr
-   16     | expr . MINUS expr
-   17     | expr . TIMES expr
-   18     | expr . DIVIDE expr
-   19     | expr . LT expr
-   20     | expr . GT expr
-   20     | expr GT expr .
-   21     | expr . LE expr
-   22     | expr . GE expr
-   23     | expr . AND expr
-   24     | expr . OR expr
+   26 expr: expr GE . expr
 
-    PLUS    shift, and go to state 23
-    MINUS   shift, and go to state 24
-    TIMES   shift, and go to state 25
-    DIVIDE  shift, and go to state 26
+    INT_VAL     shift, and go to state 22
+    BOOL_VAL    shift, and go to state 23
+    FLOAT_VAL   shift, and go to state 24
+    IDENTIFIER  shift, and go to state 25
+    MINUS       shift, and go to state 26
+    LPAREN      shift, and go to state 27
 
-    $default  reduce using rule 20 (expr)
+    expr  go to state 63
 
 
 State 46
 
-   15 expr: expr . PLUS expr
-   16     | expr . MINUS expr
-   17     | expr . TIMES expr
-   18     | expr . DIVIDE expr
-   19     | expr . LT expr
-   20     | expr . GT expr
-   21     | expr . LE expr
-   21     | expr LE expr .
-   22     | expr . GE expr
-   23     | expr . AND expr
-   24     | expr . OR expr
+   27 expr: expr AND . expr
 
-    PLUS    shift, and go to state 23
-    MINUS   shift, and go to state 24
-    TIMES   shift, and go to state 25
-    DIVIDE  shift, and go to state 26
+    INT_VAL     shift, and go to state 22
+    BOOL_VAL    shift, and go to state 23
+    FLOAT_VAL   shift, and go to state 24
+    IDENTIFIER  shift, and go to state 25
+    MINUS       shift, and go to state 26
+    LPAREN      shift, and go to state 27
 
-    $default  reduce using rule 21 (expr)
+    expr  go to state 64
 
 
 State 47
 
-   15 expr: expr . PLUS expr
-   16     | expr . MINUS expr
-   17     | expr . TIMES expr
-   18     | expr . DIVIDE expr
-   19     | expr . LT expr
-   20     | expr . GT expr
-   21     | expr . LE expr
-   22     | expr . GE expr
-   22     | expr GE expr .
-   23     | expr . AND expr
-   24     | expr . OR expr
+   28 expr: expr OR . expr
 
-    PLUS    shift, and go to state 23
-    MINUS   shift, and go to state 24
-    TIMES   shift, and go to state 25
-    DIVIDE  shift, and go to state 26
+    INT_VAL     shift, and go to state 22
+    BOOL_VAL    shift, and go to state 23
+    FLOAT_VAL   shift, and go to state 24
+    IDENTIFIER  shift, and go to state 25
+    MINUS       shift, and go to state 26
+    LPAREN      shift, and go to state 27
 
-    $default  reduce using rule 22 (expr)
+    expr  go to state 65
 
 
 State 48
 
-   15 expr: expr . PLUS expr
-   16     | expr . MINUS expr
-   17     | expr . TIMES expr
-   18     | expr . DIVIDE expr
-   19     | expr . LT expr
-   20     | expr . GT expr
-   21     | expr . LE expr
-   22     | expr . GE expr
-   23     | expr . AND expr
-   23     | expr AND expr .
-   24     | expr . OR expr
-
-    PLUS    shift, and go to state 23
-    MINUS   shift, and go to state 24
-    TIMES   shift, and go to state 25
-    DIVIDE  shift, and go to state 26
-    LT      shift, and go to state 27
-    GT      shift, and go to state 28
-    LE      shift, and go to state 29
-    GE      shift, and go to state 30
-
-    $default  reduce using rule 23 (expr)
-
-
-State 49
-
-   15 expr: expr . PLUS expr
-   16     | expr . MINUS expr
-   17     | expr . TIMES expr
-   18     | expr . DIVIDE expr
-   19     | expr . LT expr
-   20     | expr . GT expr
-   21     | expr . LE expr
-   22     | expr . GE expr
-   23     | expr . AND expr
-   24     | expr . OR expr
-   24     | expr OR expr .
-
-    PLUS    shift, and go to state 23
-    MINUS   shift, and go to state 24
-    TIMES   shift, and go to state 25
-    DIVIDE  shift, and go to state 26
-    LT      shift, and go to state 27
-    GT      shift, and go to state 28
-    LE      shift, and go to state 29
-    GE      shift, and go to state 30
-    AND     shift, and go to state 31
-
-    $default  reduce using rule 24 (expr)
-
-
-State 50
-
-    5 statement: IDENTIFIER ASSIGN expr ';' .
-
-    $default  reduce using rule 5 (statement)
-
-
-State 51
-
-   11 if_statement: IF LPAREN expr RPAREN . statement
-   12             | IF LPAREN expr RPAREN . statement ELSE statement
-
-    NUMBER      shift, and go to state 1
-    IDENTIFIER  shift, and go to state 2
-    MINUS       shift, and go to state 3
-    LPAREN      shift, and go to state 4
-    IF          shift, and go to state 5
-    PRINT       shift, and go to state 6
-    '{'         shift, and go to state 7
-
-    statement     go to state 54
-    block         go to state 11
-    if_statement  go to state 12
-    expr          go to state 13
-
-
-State 52
-
-    8 statement: PRINT LPAREN STRING RPAREN . ';'
-
-    ';'  shift, and go to state 55
-
-
-State 53
-
-    7 statement: PRINT LPAREN expr RPAREN . ';'
-
-    ';'  shift, and go to state 56
-
-
-State 54
-
-   11 if_statement: IF LPAREN expr RPAREN statement .
-   12             | IF LPAREN expr RPAREN statement . ELSE statement
-
-    ELSE  shift, and go to state 57
-
-    $default  reduce using rule 11 (if_statement)
-
-
-State 55
-
-    8 statement: PRINT LPAREN STRING RPAREN ';' .
-
-    $default  reduce using rule 8 (statement)
-
-
-State 56
-
-    7 statement: PRINT LPAREN expr RPAREN ';' .
+    7 statement: IDENTIFIER ASSIGN expr ';' .
 
     $default  reduce using rule 7 (statement)
 
 
-State 57
+State 49
 
-   12 if_statement: IF LPAREN expr RPAREN statement ELSE . statement
+   13 if_statement: IF LPAREN expr RPAREN . statement
+   14             | IF LPAREN expr RPAREN . statement ELSE statement
 
-    NUMBER      shift, and go to state 1
-    IDENTIFIER  shift, and go to state 2
-    MINUS       shift, and go to state 3
-    LPAREN      shift, and go to state 4
-    IF          shift, and go to state 5
-    PRINT       shift, and go to state 6
+    IDENTIFIER  shift, and go to state 1
+    IF          shift, and go to state 2
+    PRINT       shift, and go to state 3
+    INT_TYPE    shift, and go to state 4
+    FLOAT_TYPE  shift, and go to state 5
+    BOOL_TYPE   shift, and go to state 6
     '{'         shift, and go to state 7
 
-    statement     go to state 58
+    statement     go to state 66
     block         go to state 11
     if_statement  go to state 12
-    expr          go to state 13
+
+
+State 50
+
+    9 statement: PRINT LPAREN IDENTIFIER RPAREN . ';'
+
+    ';'  shift, and go to state 67
+
+
+State 51
+
+   10 statement: PRINT LPAREN STRING RPAREN . ';'
+
+    ';'  shift, and go to state 68
+
+
+State 52
+
+    4 statement: INT_TYPE IDENTIFIER ASSIGN expr . ';'
+   19 expr: expr . PLUS expr
+   20     | expr . MINUS expr
+   21     | expr . TIMES expr
+   22     | expr . DIVIDE expr
+   23     | expr . LT expr
+   24     | expr . GT expr
+   25     | expr . LE expr
+   26     | expr . GE expr
+   27     | expr . AND expr
+   28     | expr . OR expr
+
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    LT      shift, and go to state 42
+    GT      shift, and go to state 43
+    LE      shift, and go to state 44
+    GE      shift, and go to state 45
+    AND     shift, and go to state 46
+    OR      shift, and go to state 47
+    ';'     shift, and go to state 69
+
+
+State 53
+
+    5 statement: FLOAT_TYPE IDENTIFIER ASSIGN expr . ';'
+   19 expr: expr . PLUS expr
+   20     | expr . MINUS expr
+   21     | expr . TIMES expr
+   22     | expr . DIVIDE expr
+   23     | expr . LT expr
+   24     | expr . GT expr
+   25     | expr . LE expr
+   26     | expr . GE expr
+   27     | expr . AND expr
+   28     | expr . OR expr
+
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    LT      shift, and go to state 42
+    GT      shift, and go to state 43
+    LE      shift, and go to state 44
+    GE      shift, and go to state 45
+    AND     shift, and go to state 46
+    OR      shift, and go to state 47
+    ';'     shift, and go to state 70
+
+
+State 54
+
+    6 statement: BOOL_TYPE IDENTIFIER ASSIGN expr . ';'
+   19 expr: expr . PLUS expr
+   20     | expr . MINUS expr
+   21     | expr . TIMES expr
+   22     | expr . DIVIDE expr
+   23     | expr . LT expr
+   24     | expr . GT expr
+   25     | expr . LE expr
+   26     | expr . GE expr
+   27     | expr . AND expr
+   28     | expr . OR expr
+
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    LT      shift, and go to state 42
+    GT      shift, and go to state 43
+    LE      shift, and go to state 44
+    GE      shift, and go to state 45
+    AND     shift, and go to state 46
+    OR      shift, and go to state 47
+    ';'     shift, and go to state 71
+
+
+State 55
+
+   29 expr: LPAREN expr RPAREN .
+
+    $default  reduce using rule 29 (expr)
+
+
+State 56
+
+   19 expr: expr . PLUS expr
+   19     | expr PLUS expr .
+   20     | expr . MINUS expr
+   21     | expr . TIMES expr
+   22     | expr . DIVIDE expr
+   23     | expr . LT expr
+   24     | expr . GT expr
+   25     | expr . LE expr
+   26     | expr . GE expr
+   27     | expr . AND expr
+   28     | expr . OR expr
+
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+
+    $default  reduce using rule 19 (expr)
+
+
+State 57
+
+   19 expr: expr . PLUS expr
+   20     | expr . MINUS expr
+   20     | expr MINUS expr .
+   21     | expr . TIMES expr
+   22     | expr . DIVIDE expr
+   23     | expr . LT expr
+   24     | expr . GT expr
+   25     | expr . LE expr
+   26     | expr . GE expr
+   27     | expr . AND expr
+   28     | expr . OR expr
+
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+
+    $default  reduce using rule 20 (expr)
 
 
 State 58
 
-   12 if_statement: IF LPAREN expr RPAREN statement ELSE statement .
+   19 expr: expr . PLUS expr
+   20     | expr . MINUS expr
+   21     | expr . TIMES expr
+   21     | expr TIMES expr .
+   22     | expr . DIVIDE expr
+   23     | expr . LT expr
+   24     | expr . GT expr
+   25     | expr . LE expr
+   26     | expr . GE expr
+   27     | expr . AND expr
+   28     | expr . OR expr
 
-    $default  reduce using rule 12 (if_statement)
+    $default  reduce using rule 21 (expr)
+
+
+State 59
+
+   19 expr: expr . PLUS expr
+   20     | expr . MINUS expr
+   21     | expr . TIMES expr
+   22     | expr . DIVIDE expr
+   22     | expr DIVIDE expr .
+   23     | expr . LT expr
+   24     | expr . GT expr
+   25     | expr . LE expr
+   26     | expr . GE expr
+   27     | expr . AND expr
+   28     | expr . OR expr
+
+    $default  reduce using rule 22 (expr)
+
+
+State 60
+
+   19 expr: expr . PLUS expr
+   20     | expr . MINUS expr
+   21     | expr . TIMES expr
+   22     | expr . DIVIDE expr
+   23     | expr . LT expr
+   23     | expr LT expr .
+   24     | expr . GT expr
+   25     | expr . LE expr
+   26     | expr . GE expr
+   27     | expr . AND expr
+   28     | expr . OR expr
+
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+
+    $default  reduce using rule 23 (expr)
+
+
+State 61
+
+   19 expr: expr . PLUS expr
+   20     | expr . MINUS expr
+   21     | expr . TIMES expr
+   22     | expr . DIVIDE expr
+   23     | expr . LT expr
+   24     | expr . GT expr
+   24     | expr GT expr .
+   25     | expr . LE expr
+   26     | expr . GE expr
+   27     | expr . AND expr
+   28     | expr . OR expr
+
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+
+    $default  reduce using rule 24 (expr)
+
+
+State 62
+
+   19 expr: expr . PLUS expr
+   20     | expr . MINUS expr
+   21     | expr . TIMES expr
+   22     | expr . DIVIDE expr
+   23     | expr . LT expr
+   24     | expr . GT expr
+   25     | expr . LE expr
+   25     | expr LE expr .
+   26     | expr . GE expr
+   27     | expr . AND expr
+   28     | expr . OR expr
+
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+
+    $default  reduce using rule 25 (expr)
+
+
+State 63
+
+   19 expr: expr . PLUS expr
+   20     | expr . MINUS expr
+   21     | expr . TIMES expr
+   22     | expr . DIVIDE expr
+   23     | expr . LT expr
+   24     | expr . GT expr
+   25     | expr . LE expr
+   26     | expr . GE expr
+   26     | expr GE expr .
+   27     | expr . AND expr
+   28     | expr . OR expr
+
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+
+    $default  reduce using rule 26 (expr)
+
+
+State 64
+
+   19 expr: expr . PLUS expr
+   20     | expr . MINUS expr
+   21     | expr . TIMES expr
+   22     | expr . DIVIDE expr
+   23     | expr . LT expr
+   24     | expr . GT expr
+   25     | expr . LE expr
+   26     | expr . GE expr
+   27     | expr . AND expr
+   27     | expr AND expr .
+   28     | expr . OR expr
+
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    LT      shift, and go to state 42
+    GT      shift, and go to state 43
+    LE      shift, and go to state 44
+    GE      shift, and go to state 45
+
+    $default  reduce using rule 27 (expr)
+
+
+State 65
+
+   19 expr: expr . PLUS expr
+   20     | expr . MINUS expr
+   21     | expr . TIMES expr
+   22     | expr . DIVIDE expr
+   23     | expr . LT expr
+   24     | expr . GT expr
+   25     | expr . LE expr
+   26     | expr . GE expr
+   27     | expr . AND expr
+   28     | expr . OR expr
+   28     | expr OR expr .
+
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    LT      shift, and go to state 42
+    GT      shift, and go to state 43
+    LE      shift, and go to state 44
+    GE      shift, and go to state 45
+    AND     shift, and go to state 46
+
+    $default  reduce using rule 28 (expr)
+
+
+State 66
+
+   13 if_statement: IF LPAREN expr RPAREN statement .
+   14             | IF LPAREN expr RPAREN statement . ELSE statement
+
+    ELSE  shift, and go to state 72
+
+    $default  reduce using rule 13 (if_statement)
+
+
+State 67
+
+    9 statement: PRINT LPAREN IDENTIFIER RPAREN ';' .
+
+    $default  reduce using rule 9 (statement)
+
+
+State 68
+
+   10 statement: PRINT LPAREN STRING RPAREN ';' .
+
+    $default  reduce using rule 10 (statement)
+
+
+State 69
+
+    4 statement: INT_TYPE IDENTIFIER ASSIGN expr ';' .
+
+    $default  reduce using rule 4 (statement)
+
+
+State 70
+
+    5 statement: FLOAT_TYPE IDENTIFIER ASSIGN expr ';' .
+
+    $default  reduce using rule 5 (statement)
+
+
+State 71
+
+    6 statement: BOOL_TYPE IDENTIFIER ASSIGN expr ';' .
+
+    $default  reduce using rule 6 (statement)
+
+
+State 72
+
+   14 if_statement: IF LPAREN expr RPAREN statement ELSE . statement
+
+    IDENTIFIER  shift, and go to state 1
+    IF          shift, and go to state 2
+    PRINT       shift, and go to state 3
+    INT_TYPE    shift, and go to state 4
+    FLOAT_TYPE  shift, and go to state 5
+    BOOL_TYPE   shift, and go to state 6
+    '{'         shift, and go to state 7
+
+    statement     go to state 73
+    block         go to state 11
+    if_statement  go to state 12
+
+
+State 73
+
+   14 if_statement: IF LPAREN expr RPAREN statement ELSE statement .
+
+    $default  reduce using rule 14 (if_statement)

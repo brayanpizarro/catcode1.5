@@ -54,27 +54,32 @@ extern int yydebug;
     YYEOF = 0,                     /* "end of file"  */
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
-    NUMBER = 258,                  /* NUMBER  */
-    IDENTIFIER = 259,              /* IDENTIFIER  */
-    STRING = 260,                  /* STRING  */
-    PLUS = 261,                    /* PLUS  */
-    MINUS = 262,                   /* MINUS  */
-    TIMES = 263,                   /* TIMES  */
-    DIVIDE = 264,                  /* DIVIDE  */
-    LPAREN = 265,                  /* LPAREN  */
-    RPAREN = 266,                  /* RPAREN  */
-    LT = 267,                      /* LT  */
-    GT = 268,                      /* GT  */
-    LE = 269,                      /* LE  */
-    GE = 270,                      /* GE  */
-    AND = 271,                     /* AND  */
-    OR = 272,                      /* OR  */
-    IF = 273,                      /* IF  */
-    ELSE = 274,                    /* ELSE  */
-    PRINT = 275,                   /* PRINT  */
-    ASSIGN = 276,                  /* ASSIGN  */
-    UMINUS = 277,                  /* UMINUS  */
-    LOWER_THAN_ELSE = 278          /* LOWER_THAN_ELSE  */
+    INT_VAL = 258,                 /* INT_VAL  */
+    BOOL_VAL = 259,                /* BOOL_VAL  */
+    FLOAT_VAL = 260,               /* FLOAT_VAL  */
+    IDENTIFIER = 261,              /* IDENTIFIER  */
+    STRING = 262,                  /* STRING  */
+    PLUS = 263,                    /* PLUS  */
+    MINUS = 264,                   /* MINUS  */
+    TIMES = 265,                   /* TIMES  */
+    DIVIDE = 266,                  /* DIVIDE  */
+    LPAREN = 267,                  /* LPAREN  */
+    RPAREN = 268,                  /* RPAREN  */
+    LT = 269,                      /* LT  */
+    GT = 270,                      /* GT  */
+    LE = 271,                      /* LE  */
+    GE = 272,                      /* GE  */
+    AND = 273,                     /* AND  */
+    OR = 274,                      /* OR  */
+    IF = 275,                      /* IF  */
+    ELSE = 276,                    /* ELSE  */
+    PRINT = 277,                   /* PRINT  */
+    ASSIGN = 278,                  /* ASSIGN  */
+    INT_TYPE = 279,                /* INT_TYPE  */
+    FLOAT_TYPE = 280,              /* FLOAT_TYPE  */
+    BOOL_TYPE = 281,               /* BOOL_TYPE  */
+    UMINUS = 282,                  /* UMINUS  */
+    LOWER_THAN_ELSE = 283          /* LOWER_THAN_ELSE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -83,13 +88,14 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 73 "parser.y"
+#line 100 "parser.y"
 
-    int num;
+    int ival;
+    float fval;
     char *id;
-    Statement stmt;
+    struct Statement stmt;
 
-#line 93 "parser.tab.h"
+#line 99 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

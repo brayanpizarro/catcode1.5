@@ -3,6 +3,7 @@
 #include "parser.tab.h"
 #include <string.h>
 %}
+
 %%
 
 "+"         { return PLUS; }
@@ -24,7 +25,13 @@
 "{"         { return '{'; }
 "}"         { return '}'; }
 ";"         { return ';'; }
-[0-9]+      { yylval.num = atoi(yytext); return NUMBER; }
+"MIAU"      { return INT_TYPE; }
+"MIAUMIAU"  { return FLOAT_TYPE; }
+"GARRITA"   { return BOOL_TYPE; }
+"true"      { yylval.ival = 1; return BOOL_VAL; }
+"false"     { yylval.ival = 0; return BOOL_VAL; }
+[0-9]+      { yylval.ival = atoi(yytext); return INT_VAL; }
+[0-9]+\.[0-9]+ { yylval.fval = atof(yytext); return FLOAT_VAL; }
 [a-zA-Z_][a-zA-Z0-9_]* { yylval.id = strdup(yytext); return IDENTIFIER; }
 \"[^\"]*\"  { yylval.id = strdup(yytext); return STRING; }
 [ \t\n]     { /* Ignorar espacios en blanco */ }

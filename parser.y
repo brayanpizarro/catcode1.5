@@ -9,10 +9,7 @@ void yyerror(const char *s);
 extern FILE *yyin;
 
 #define MAX_VARS 100
-struct {
-    char *name;
-    int value;
-} vars[MAX_VARS];
+Variable vars[MAX_VARS];
 int var_count = 0;
 
 int get_var(char *name) {
@@ -23,60 +20,92 @@ int get_var(char *name) {
     }
     if (var_count < MAX_VARS) {
         vars[var_count].name = strdup(name);
-        vars[var_count].value = 0;
         return var_count++;
     }
     yyerror("Demasiadas variables");
     return -1;
 }
 
-void print_string(char *s) {
-    int len = strlen(s);
-    if (len >= 2 && s[0] == '"' && s[len-1] == '"') {
-        printf("%.*s\n", len-2, s+1);
-    } else {
-        printf("%s\n", s);
+void print_var(struct Statement s) {
+    int index = s.index;
+    if (index < 0 || index >= var_count) {
+        return;
+    }
+    switch(vars[index].type) {
+        case TYPE_INT:
+            printf("%d\n", vars[index].value.i_val);
+            break;
+        case TYPE_FLOAT:
+            printf("%.6f\n", vars[index].value.f_val);
+            break;
+        case TYPE_BOOL:
+            printf("%s\n", vars[index].value.b_val ? "true" : "false");
+            break;
+        case TYPE_STRING:
+            printf("%s\n", vars[index].value.s_val);
+            break;
+        default:
+            break;
     }
 }
 
-Statement make_empty_stmt() {
-    Statement s = {NULL, NULL};
+void print_string(struct Statement s) {
+    printf("%s\n", s.string);
+    free(s.string);
+}
+
+struct Statement make_empty_stmt() {
+    struct Statement s = {NULL, 0, NULL};
     return s;
 }
 
-Statement make_print_stmt(int value) {
-    Statement s;
-    s.func = NULL;
-    s.string = malloc(20);
-    snprintf(s.string, 20, "%d", value);
+struct Statement make_print_stmt(int index) {
+    struct Statement s;
+    s.func = print_var;
+    s.index = index;
     return s;
 }
 
-Statement make_print_string_stmt(char *str) {
-    Statement s;
-    s.func = NULL;
+struct Statement make_print_string_stmt(char *str) {
+    struct Statement s;
+    s.func = print_string;
     s.string = strdup(str);
     return s;
 }
 
-void execute_stmt(Statement s) {
-    if (s.func) {
-        s.func();
-    } else if (s.string) {
-        print_string(s.string);
-        free(s.string);
+void execute_stmt(struct Statement stmt) {
+    if (stmt.func) {
+        stmt.func(stmt);
     }
+}
+
+int is_float_int(int value) {
+    return 0;
+}
+
+int is_float_float(float value) {
+    return 1;
+}
+
+float to_float_int(int value) {
+    return (float)value;
+}
+
+float to_float_float(float value) {
+    return value;
 }
 
 %}
 
 %union {
-    int num;
+    int ival;
+    float fval;
     char *id;
-    Statement stmt;
+    struct Statement stmt;
 }
 
-%token <num> NUMBER
+%token <ival> INT_VAL BOOL_VAL
+%token <fval> FLOAT_VAL
 %token <id> IDENTIFIER STRING
 %token PLUS MINUS TIMES DIVIDE
 %token LPAREN RPAREN
@@ -84,8 +113,9 @@ void execute_stmt(Statement s) {
 %token AND OR
 %token IF ELSE PRINT
 %token ASSIGN
+%token INT_TYPE FLOAT_TYPE BOOL_TYPE
 
-%type <num> expr
+%type <ival> expr
 %type <stmt> statement
 %type <stmt> statement_list
 %type <stmt> block
@@ -104,11 +134,15 @@ void execute_stmt(Statement s) {
 %%
 
 program:
-    statement_list { execute_stmt($1); }
+    statement_list { 
+        execute_stmt($1);
+    }
     ;
 
 statement_list:
-    statement { $$ = $1; }
+    statement { 
+        $$ = $1; 
+    }
     | statement_list statement { 
         execute_stmt($1);
         $$ = $2;
@@ -116,16 +150,58 @@ statement_list:
     ;
 
 statement:
-    expr ';' { $$ = make_empty_stmt(); }
+    INT_TYPE IDENTIFIER ASSIGN expr ';' {
+        int index = get_var($2);
+        vars[index].type = TYPE_INT;
+        vars[index].value.i_val = $4;
+        free($2);
+        $$ = make_empty_stmt();
+    }
+    | FLOAT_TYPE IDENTIFIER ASSIGN expr ';' {
+        int index = get_var($2);
+        vars[index].type = TYPE_FLOAT;
+        vars[index].value.f_val = $4;
+        free($2);
+        $$ = make_empty_stmt();
+    }
+    | BOOL_TYPE IDENTIFIER ASSIGN expr ';' {
+        int index = get_var($2);
+        vars[index].type = TYPE_BOOL;
+        vars[index].value.b_val = $4 != 0;
+        free($2);
+        $$ = make_empty_stmt();
+    }
     | IDENTIFIER ASSIGN expr ';' {
-         vars[get_var($1)].value = $3;
-         free($1);
-         $$ = make_empty_stmt();
-     }
-    | if_statement { $$ = $1; }
-    | PRINT LPAREN expr RPAREN ';' { $$ = make_print_stmt($3); }
-    | PRINT LPAREN STRING RPAREN ';' { $$ = make_print_string_stmt($3); free($3); }
-    | block { $$ = $1; }
+        int index = get_var($1);
+        switch(vars[index].type) {
+            case TYPE_INT:
+                vars[index].value.i_val = $3;
+                break;
+            case TYPE_FLOAT:
+                vars[index].value.f_val = $3;
+                break;
+            case TYPE_BOOL:
+                vars[index].value.b_val = $3 != 0;
+                break;
+        }
+        free($1);
+        $$ = make_empty_stmt();
+    }
+    | if_statement { 
+        $$ = $1; 
+    }
+    | PRINT LPAREN IDENTIFIER RPAREN ';' { 
+        int index = get_var($3);
+        $$ = make_print_stmt(index); 
+        free($3); 
+    }
+    | PRINT LPAREN STRING RPAREN ';' { 
+        $$ = make_print_string_stmt($3); 
+        free($3); 
+    }
+    | block { 
+        $$ = $1; 
+    }
     ;
 
 block:
@@ -152,20 +228,77 @@ if_statement:
     ;
  
 expr:
-    NUMBER { $$ = $1; }
-    | IDENTIFIER { $$ = vars[get_var($1)].value; free($1); }
-    | expr PLUS expr { $$ = $1 + $3; }
-    | expr MINUS expr { $$ = $1 - $3; }
-    | expr TIMES expr { $$ = $1 * $3; }
-    | expr DIVIDE expr { $$ = $1 / $3; }
-    | expr LT expr { $$ = ($1 < $3) ? 1 : 0; }
-    | expr GT expr { $$ = ($1 > $3) ? 1 : 0; }
-    | expr LE expr { $$ = ($1 <= $3) ? 1 : 0; }
-    | expr GE expr { $$ = ($1 >= $3) ? 1 : 0; }
-    | expr AND expr { $$ = ($1 && $3) ? 1 : 0; }
-    | expr OR expr { $$ = ($1 || $3) ? 1 : 0; }
-    | LPAREN expr RPAREN { $$ = $2; }
-    | MINUS expr %prec UMINUS { $$ = -$2; }
+    INT_VAL { 
+        $$ = $1; 
+    }
+    | FLOAT_VAL { 
+        $$ = $1; 
+    }
+    | BOOL_VAL { 
+        $$ = $1; 
+    }
+    | IDENTIFIER { 
+        int index = get_var($1);
+        if (index < 0 || index >= var_count) {
+            yyerror("Índice de variable inválido");
+            $$ = 0;
+        } else {
+            switch (vars[index].type) {
+                case TYPE_INT:
+                    $$ = vars[index].value.i_val;
+                    break;
+                case TYPE_FLOAT:
+                    $$ = vars[index].value.f_val;
+                    break;
+                case TYPE_BOOL:
+                    $$ = vars[index].value.b_val ? 1 : 0;
+                    break;
+                default:
+                    yyerror("Tipo de variable desconocido");
+                    $$ = 0;
+            }
+        }
+        free($1);
+    }
+    | expr PLUS expr { 
+        if (is_float_float($1) || is_float_float($3))
+            $$ = to_float_float($1) + to_float_float($3);
+        else
+            $$ = $1 + $3;
+    }
+    | expr MINUS expr { 
+        $$ = $1 - $3; 
+    }
+    | expr TIMES expr { 
+        $$ = $1 * $3; 
+    }
+    | expr DIVIDE expr { 
+        $$ = $1 / $3; 
+    }
+    | expr LT expr { 
+        $$ = ($1 < $3) ? 1 : 0; 
+    }
+    | expr GT expr { 
+        $$ = ($1 > $3) ? 1 : 0; 
+    }
+    | expr LE expr { 
+        $$ = ($1 <= $3) ? 1 : 0; 
+    }
+    | expr GE expr { 
+        $$ = ($1 >= $3) ? 1 : 0; 
+    }
+    | expr AND expr { 
+        $$ = ($1 && $3) ? 1 : 0; 
+    }
+    | expr OR expr { 
+        $$ = ($1 || $3) ? 1 : 0; 
+    }
+    | LPAREN expr RPAREN { 
+        $$ = $2; 
+    }
+    | MINUS expr %prec UMINUS { 
+        $$ = -$2; 
+    }
     ;
 
 %%
