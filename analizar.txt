@@ -1,0 +1,17 @@
+x = 5;
+y = 10;
+PRINTCAT(x + y);
+
+GATITO (x < y) {
+    PRINTCAT("x es menor que y");
+} GATOTE {
+    PRINTCAT("x no es menor que y");
+}
+
+z = 0;
+
+resultado = (x + y) * 2;
+PRINTCAT(resultado);
+
+condicion = (x > 0) and (y < 20);
+PRINTCAT(condicion);
